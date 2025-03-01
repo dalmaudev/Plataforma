@@ -1053,22 +1053,155 @@ $('#descargarPDF').click(function() {
     const baseUrl = '/Plataforma/public';
     const pdfUrl = `${baseUrl}/formulario-ex/pdf/${formType}`;
     
-    fillFormByTemplate(pdfUrl).then(() => {
-        const iframeSrc = document.getElementById('pdfFrame').src;
-        
-        // Obtener el nombre sugerido para el archivo
-        const suggestedName = formType.toUpperCase().startsWith('EX') ? 
-            formType.substring(0, 4) + '.pdf' : 
-            formType;
-
-        // Crear un enlace con target="_blank" para forzar el diálogo de guardado
-        const link = document.createElement('a');
-        link.href = iframeSrc;
-        link.target = "_blank"; // Esto fuerza el diálogo de guardado en la mayoría de navegadores
-        link.download = suggestedName;
-        link.dispatchEvent(new MouseEvent('click')); // Simular click
+    fillFormByTemplate(pdfUrl).then(async () => {
+        try {
+            // Obtener el blob del PDF desde el iframe
+            const iframeSrc = document.getElementById('pdfFrame').src;
+            const response = await fetch(iframeSrc);
+            const blob = await response.blob();
+            
+            // Crear un nuevo objeto File con el blob
+            const suggestedName = formType.toUpperCase().startsWith('EX') ? 
+                formType.substring(0, 4) + '.pdf' : 
+                formType;
+            
+            const file = new File([blob], suggestedName, { type: 'application/pdf' });
+            
+            // Usar la API de showSaveFilePicker para mostrar el diálogo nativo del sistema
+            if (window.showSaveFilePicker) {
+                try {
+                    const opts = {
+                        suggestedName: suggestedName,
+                        types: [{
+                            description: 'PDF Document',
+                            accept: { 'application/pdf': ['.pdf'] }
+                        }]
+                    };
+                    
+                    const handle = await window.showSaveFilePicker(opts);
+                    const writable = await handle.createWritable();
+                    await writable.write(file);
+                    await writable.close();
+                    
+                    // Mostrar notificación de éxito
+                    mostrarNotificacionDescarga(suggestedName);
+                    
+                    return; // Si esto funciona, terminamos aquí
+                } catch (e) {
+                    // Verificar si el error es debido a que el usuario canceló el diálogo
+                    if (e.name === 'AbortError') {
+                        console.log('Usuario canceló el diálogo de guardado');
+                        return; // Salir sin continuar con el método alternativo
+                    }
+                    
+                    console.log('File System Access API no disponible, usando método alternativo');
+                    // Solo continuamos con el método alternativo si el error no es por cancelación
+                }
+            }
+            
+            // Método alternativo: Crear un servidor de descarga temporal
+            // Este enfoque utiliza una URL de datos que el navegador trata como una descarga externa
+            
+            // Convertir el blob a una URL de datos (data URL)
+            const reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    // Crear un enlace con la URL de datos
+                    const link = document.createElement('a');
+                    link.href = reader.result;
+                    link.download = suggestedName;
+                    link.target = '_blank';
+                    
+                    // Añadir atributos para forzar la descarga
+                    link.setAttribute('rel', 'noopener noreferrer');
+                    link.setAttribute('type', 'application/octet-stream');
+                    
+                    // Añadir el enlace al DOM
+                    document.body.appendChild(link);
+                    
+                    // Usar setTimeout para simular mejor una acción de usuario
+                    setTimeout(() => {
+                        // Simular un clic de usuario con todas las propiedades necesarias
+                        const clickEvent = new MouseEvent('click', {
+                            view: window,
+                            bubbles: true,
+                            cancelable: true,
+                            buttons: 1  // Simula el botón izquierdo del ratón
+                        });
+                        link.dispatchEvent(clickEvent);
+                        
+                        // Mostrar notificación de éxito
+                        mostrarNotificacionDescarga(suggestedName);
+                        
+                        // Limpiar después de un tiempo
+                        setTimeout(() => {
+                            document.body.removeChild(link);
+                        }, 1000);
+                    }, 100);
+                } catch (error) {
+                    console.error('Error en la descarga con FileReader:', error);
+                    
+                    // Método de respaldo final: navegación directa
+                    try {
+                        // Crear una URL de objeto y navegar directamente
+                        const blobUrl = URL.createObjectURL(blob);
+                        
+                        // Intentar forzar la descarga con un iframe
+                        const downloadFrame = document.createElement('iframe');
+                        downloadFrame.style.display = 'none';
+                        downloadFrame.onload = function() {
+                            try {
+                                const doc = downloadFrame.contentDocument;
+                                // Crear un formulario que envíe el archivo como descarga
+                                const form = doc.createElement('form');
+                                form.method = 'GET';
+                                form.action = blobUrl;
+                                
+                                // Añadir un campo oculto para forzar la descarga
+                                const input = doc.createElement('input');
+                                input.type = 'hidden';
+                                input.name = 'download';
+                                input.value = suggestedName;
+                                form.appendChild(input);
+                                
+                                doc.body.appendChild(form);
+                                form.submit();
+                                
+                                // Limpiar después
+                                setTimeout(() => {
+                                    URL.revokeObjectURL(blobUrl);
+                                    document.body.removeChild(downloadFrame);
+                                }, 2000);
+                            } catch (frameError) {
+                                console.error('Error en iframe:', frameError);
+                                URL.revokeObjectURL(blobUrl);
+                                document.body.removeChild(downloadFrame);
+                                
+                                // Último intento: navegación directa
+                                window.location.href = blobUrl;
+                            }
+                        };
+                        document.body.appendChild(downloadFrame);
+                        downloadFrame.src = 'about:blank';
+                    } catch (finalError) {
+                        console.error('Error en todos los métodos de descarga:', finalError);
+                    }
+                }
+            };
+            
+            // Iniciar la lectura del blob como URL de datos
+            reader.readAsDataURL(blob);
+            
+        } catch (error) {
+            console.error('Error al descargar el PDF:', error);
+        }
     });
 });
+
+
+
+
+
         </script>
 
         @if (session('eliminar') == 'ok')
