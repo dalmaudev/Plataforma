@@ -1068,7 +1068,6 @@ $('#descargarPDF').click(function() {
             const file = new File([blob], suggestedName, { type: 'application/pdf' });
             
             // MÉTODO 1: Usar la API File System Access para seleccionar carpeta
-            // Este método mostrará un diálogo de selección de carpeta
             if ('showSaveFilePicker' in window) {
                 try {
                     const opts = {
@@ -1080,12 +1079,16 @@ $('#descargarPDF').click(function() {
                     };
                     
                     const handle = await window.showSaveFilePicker(opts);
+                    
+                    // Capturar el nombre del archivo que el usuario seleccionó
+                    const userSelectedName = handle.name;
+                    
                     const writable = await handle.createWritable();
                     await writable.write(file);
                     await writable.close();
                     
-                    // Mostrar notificación de éxito
-                    mostrarNotificacionDescarga(suggestedName, "Se ha guardado en la ubicación seleccionada");
+                    // Mostrar notificación con el nombre real seleccionado por el usuario
+                    mostrarNotificacionDescarga(userSelectedName, "Se ha guardado en la ubicación seleccionada");
                     return; // ¡IMPORTANTE! Detiene la ejecución para evitar descargas duplicadas
                 } catch (e) {
                     // Si el usuario cancela la selección (AbortError), no seguimos con otros métodos
