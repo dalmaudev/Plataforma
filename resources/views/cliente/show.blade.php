@@ -1067,8 +1067,9 @@ $('#descargarPDF').click(function() {
             
             const file = new File([blob], suggestedName, { type: 'application/pdf' });
             
-            // Usar la API de showSaveFilePicker para mostrar el diálogo nativo del sistema
-            if (window.showSaveFilePicker) {
+            // MÉTODO 1: Usar la API File System Access para seleccionar carpeta
+            // Este método mostrará un diálogo de selección de carpeta
+            if ('showSaveFilePicker' in window) {
                 try {
                     const opts = {
                         suggestedName: suggestedName,
@@ -1084,123 +1085,137 @@ $('#descargarPDF').click(function() {
                     await writable.close();
                     
                     // Mostrar notificación de éxito
-                    mostrarNotificacionDescarga(suggestedName);
-                    
-                    return; // Si esto funciona, terminamos aquí
+                    mostrarNotificacionDescarga(suggestedName, "Se ha guardado en la ubicación seleccionada");
+                    return; // ¡IMPORTANTE! Detiene la ejecución para evitar descargas duplicadas
                 } catch (e) {
-                    // Verificar si el error es debido a que el usuario canceló el diálogo
+                    // Si el usuario cancela la selección (AbortError), no seguimos con otros métodos
                     if (e.name === 'AbortError') {
-                        console.log('Usuario canceló el diálogo de guardado');
-                        return; // Salir sin continuar con el método alternativo
+                        console.log('Usuario canceló la selección de carpeta');
+                        return;
                     }
                     
-                    console.log('File System Access API no disponible, usando método alternativo');
-                    // Solo continuamos con el método alternativo si el error no es por cancelación
+                    console.log('Error usando File System Access API:', e);
+                    // Si hay un error diferente a la cancelación, continuamos con el método alternativo
                 }
             }
             
-            // Método alternativo: Crear un servidor de descarga temporal
-            // Este enfoque utiliza una URL de datos que el navegador trata como una descarga externa
+            // MÉTODO 2: Método tradicional de descarga (fallback)
+            // Solo se ejecuta si el método 1 no está disponible o falla
+            console.log('Usando método alternativo de descarga (descarga directa)');
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = suggestedName;
+            document.body.appendChild(a);
+            a.click();
             
-            // Convertir el blob a una URL de datos (data URL)
-            const reader = new FileReader();
-            reader.onload = function() {
-                try {
-                    // Crear un enlace con la URL de datos
-                    const link = document.createElement('a');
-                    link.href = reader.result;
-                    link.download = suggestedName;
-                    link.target = '_blank';
-                    
-                    // Añadir atributos para forzar la descarga
-                    link.setAttribute('rel', 'noopener noreferrer');
-                    link.setAttribute('type', 'application/octet-stream');
-                    
-                    // Añadir el enlace al DOM
-                    document.body.appendChild(link);
-                    
-                    // Usar setTimeout para simular mejor una acción de usuario
-                    setTimeout(() => {
-                        // Simular un clic de usuario con todas las propiedades necesarias
-                        const clickEvent = new MouseEvent('click', {
-                            view: window,
-                            bubbles: true,
-                            cancelable: true,
-                            buttons: 1  // Simula el botón izquierdo del ratón
-                        });
-                        link.dispatchEvent(clickEvent);
-                        
-                        // Mostrar notificación de éxito
-                        mostrarNotificacionDescarga(suggestedName);
-                        
-                        // Limpiar después de un tiempo
-                        setTimeout(() => {
-                            document.body.removeChild(link);
-                        }, 1000);
-                    }, 100);
-                } catch (error) {
-                    console.error('Error en la descarga con FileReader:', error);
-                    
-                    // Método de respaldo final: navegación directa
-                    try {
-                        // Crear una URL de objeto y navegar directamente
-                        const blobUrl = URL.createObjectURL(blob);
-                        
-                        // Intentar forzar la descarga con un iframe
-                        const downloadFrame = document.createElement('iframe');
-                        downloadFrame.style.display = 'none';
-                        downloadFrame.onload = function() {
-                            try {
-                                const doc = downloadFrame.contentDocument;
-                                // Crear un formulario que envíe el archivo como descarga
-                                const form = doc.createElement('form');
-                                form.method = 'GET';
-                                form.action = blobUrl;
-                                
-                                // Añadir un campo oculto para forzar la descarga
-                                const input = doc.createElement('input');
-                                input.type = 'hidden';
-                                input.name = 'download';
-                                input.value = suggestedName;
-                                form.appendChild(input);
-                                
-                                doc.body.appendChild(form);
-                                form.submit();
-                                
-                                // Limpiar después
-                                setTimeout(() => {
-                                    URL.revokeObjectURL(blobUrl);
-                                    document.body.removeChild(downloadFrame);
-                                }, 2000);
-                            } catch (frameError) {
-                                console.error('Error en iframe:', frameError);
-                                URL.revokeObjectURL(blobUrl);
-                                document.body.removeChild(downloadFrame);
-                                
-                                // Último intento: navegación directa
-                                window.location.href = blobUrl;
-                            }
-                        };
-                        document.body.appendChild(downloadFrame);
-                        downloadFrame.src = 'about:blank';
-                    } catch (finalError) {
-                        console.error('Error en todos los métodos de descarga:', finalError);
-                    }
-                }
-            };
+            // Limpieza
+            setTimeout(() => {
+                URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+            }, 100);
             
-            // Iniciar la lectura del blob como URL de datos
-            reader.readAsDataURL(blob);
+            // Mostrar notificación diferente para este método
+            mostrarNotificacionDescarga(suggestedName, "Se ha descargado en tu carpeta de descargas");
             
         } catch (error) {
             console.error('Error al descargar el PDF:', error);
+            mostrarNotificacionError('No se pudo descargar el archivo');
         }
     });
 });
 
+// Función para mostrar la notificación de descarga exitosa
+function mostrarNotificacionDescarga(nombreArchivo, mensaje) {
+    // Crear el elemento de notificación
+    const notificacion = document.createElement('div');
+    notificacion.style.position = 'fixed';
+    notificacion.style.bottom = '20px';
+    notificacion.style.right = '20px';
+    notificacion.style.backgroundColor = '#28a745';
+    notificacion.style.color = 'white';
+    notificacion.style.padding = '15px 20px';
+    notificacion.style.borderRadius = '4px';
+    notificacion.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+    notificacion.style.zIndex = '9999';
+    notificacion.style.display = 'flex';
+    notificacion.style.alignItems = 'center';
+    notificacion.style.maxWidth = '300px';
+    notificacion.style.animation = 'fadeIn 0.3s ease-out';
+    
+    // Añadir icono y mensaje dinámico
+    notificacion.innerHTML = `
+        <i class="fas fa-check-circle" style="margin-right: 10px; font-size: 20px;"></i>
+        <div>
+            <div style="font-weight: bold; margin-bottom: 5px;">Descarga completada</div>
+            <div style="font-size: 13px;">${nombreArchivo}</div>
+            <div style="font-size: 13px;">${mensaje}</div>
+        </div>
+    `;
+    
+    // Añadir animación CSS si no existe
+    if (!document.getElementById('notificacion-style')) {
+        const style = document.createElement('style');
+        style.id = 'notificacion-style';
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(20px); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Añadir a la página
+    document.body.appendChild(notificacion);
+    
+    // Hacer que desaparezca después de 5 segundos
+    setTimeout(() => {
+        notificacion.style.animation = 'fadeOut 0.3s ease-in';
+        setTimeout(() => {
+            document.body.removeChild(notificacion);
+        }, 300);
+    }, 5000);
+}
 
-
-
+// Función para mostrar notificación de error
+function mostrarNotificacionError(mensaje) {
+    const notificacion = document.createElement('div');
+    notificacion.style.position = 'fixed';
+    notificacion.style.bottom = '20px';
+    notificacion.style.right = '20px';
+    notificacion.style.backgroundColor = '#dc3545';
+    notificacion.style.color = 'white';
+    notificacion.style.padding = '15px 20px';
+    notificacion.style.borderRadius = '4px';
+    notificacion.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+    notificacion.style.zIndex = '9999';
+    notificacion.style.display = 'flex';
+    notificacion.style.alignItems = 'center';
+    notificacion.style.maxWidth = '300px';
+    notificacion.style.animation = 'fadeIn 0.3s ease-out';
+    
+    notificacion.innerHTML = `
+        <i class="fas fa-exclamation-circle" style="margin-right: 10px; font-size: 20px;"></i>
+        <div>
+            <div style="font-weight: bold; margin-bottom: 5px;">Error</div>
+            <div style="font-size: 13px;">${mensaje}</div>
+        </div>
+    `;
+    
+    document.body.appendChild(notificacion);
+    
+    setTimeout(() => {
+        notificacion.style.animation = 'fadeOut 0.3s ease-in';
+        setTimeout(() => {
+            document.body.removeChild(notificacion);
+        }, 300);
+    }, 5000);
+}
 
         </script>
 
