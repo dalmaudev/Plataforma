@@ -849,6 +849,55 @@
                         } catch (e) {
                             console.error('Error rellenando campos:', e);
                         }
+                    } else if (formType === 'EX15 - Formulario_NIE_y_certificados.pdf') {
+                        try {
+                            const tipoDoc = {{ $cliente->documento_id }};
+                            const documento = '{{ $cliente->documento }}';
+                            const apellidos = '{{ $cliente->apellido }}'.split(' ');
+                            const fechaNac = '{{ $cliente->fecnac }}'.split('-');
+                            const nacionalidad = '{{ $cliente->pais->nombre }}';
+                            
+                            // Lógica para el documento según el tipo
+                            if (tipoDoc === 3) {
+                                form.getTextField('Textfield').setText(documento);        // Campo1 - Pasaporte completo
+                            } else {
+                                form.getTextField('Textfield-0').setText(documento.substring(0, 1));         // Campo2 - Primera letra NIE
+                                form.getTextField('Textfield-1').setText(documento.substring(1, documento.length - 1));  // Campo3 - Dígitos NIE
+                                form.getTextField('Textfield-2').setText(documento.slice(-1));               // Campo4 - Última letra NIE
+                            }
+                            const fecha = new Date();
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const dia = fecha.getDate().toString().padStart(2, '0');
+                            // Apellidos
+                            form.getTextField('Textfield-3').setText(apellidos[0] || '');    // Campo5 - Primer apellido
+                            form.getTextField('x').setText(apellidos[1] || '');              // Campo6 - Segundo apellido
+
+                            // Resto de campos...
+                            form.getTextField('Textfield-4').setText('{{ $cliente->nombre }}');           // Campo7 - nombre
+                            form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');        // Campo58 - día nacimiento
+                            form.getTextField('Texto-1').setText(fechaNac[1] || '');                     // Campo59 - mes nacimiento
+                            form.getTextField('Textfield-6').setText(fechaNac[0] || '');                 // Campo8 - año nacimiento
+                            form.getTextField('Textfield-7').setText('{{ $cliente->pais->nombre }}');    // Campo10 - país
+                            form.getTextField('Textfield-8').setText('{{ $cliente->pais->nombre }}');    // Campo11 - nacionalidad
+                            form.getTextField('Textfield-10').setText('{{ $cliente->nombrepadre }}');    // Campo12 - nombre padre
+                            form.getTextField('N').setText('{{ $cliente->nombremadre }}');               // Campo13 - nombre madre
+                            form.getTextField('Provincia').setText('{{ $cliente->direccion }}');         // Campo14 - dirección
+                            form.getTextField('Textfield-14').setText('{{ $cliente->cp }}');             // Campo18 - CP
+                            form.getTextField('Textfield-15').setText('{{ $cliente->provincia->nombre }}'); // Campo19 - provincia
+                            form.getTextField('Textfield-13').setText('{{ $cliente->localidad->nombre }}'); // Campo17 - localidad
+                            form.getTextField('Textfield-16').setText('{{ $cliente->telefono }}');       // Campo20 - teléfono
+                            form.getTextField('Titulo4').setText('{{ $cliente->email }}');               // Campo21 - email
+                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}'); // Campo48 - nombre completo
+                            form.getTextField('Textfield-50').setText('MADRID');                         // Campo50 - Madrid
+                            form.getTextField('a').setText(fecha.getDate().toString());                  // Campo51 - día actual
+                            form.getTextField('de').setText(meses[fecha.getMonth()]);                    // Campo52 - mes actual
+                            form.getTextField('de-0').setText(fecha.getFullYear().toString());          // Campo53 - año actual
+
+                            // ... rest of existing code for checkboxes ...
+
+                        } catch (e) {
+                            console.error('Error al rellenar el formulario:', e);
+                        }
                     } else if (formType === 'EX19 - Tarjeta_familiar_comunitario.pdf') {
                         // Variables necesarias
                         const tipoDoc = {{ $cliente->documento_id }};
@@ -1023,7 +1072,66 @@
                         } catch (e) {
                             console.error('Error rellenando campos:', e);
                         }
+                    } else if (formType === 'EX18 - Certificado_residencia_comunitaria.pdf') {
+                        try {
+                            const tipoDoc = {{ $cliente->documento_id }};
+                            const documento = '{{ $cliente->documento }}';
+                            const apellidos = '{{ $cliente->apellido }}'.split(' ');
+                            const fechaNac = '{{ $cliente->fecnac }}'.split('-');
+                            const nacionalidad = '{{ $cliente->pais->nombre }}';
+                            
+                            // Obtener fecha actual
+                            const fecha = new Date();
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+
+                            // Documento según tipo
+                            if (tipoDoc === 3) {
+                                form.getTextField('Textfield-2').setText(documento);                    // Campo1 - Pasaporte completo
+                            } else {
+                                form.getTextField('Textfield-3').setText(documento.substring(0, 1));   // Campo2 - Primera letra NIE
+                                form.getTextField('Textfield-4').setText(documento.substring(1, documento.length - 1));  // Campo3 - Dígitos NIE
+                                form.getTextField('Textfield-5').setText(documento.slice(-1));         // Campo4 - Última letra NIE
+                            }
+
+                            // Datos personales
+                            form.getTextField('CP').setText(apellidos[0] || '');                      // Campo12 - Primer apellido
+                            form.getTextField('x').setText(apellidos[1] || '');                       // Campo5 - Segundo apellido
+                            form.getTextField('Textfield-6').setText('{{ $cliente->nombre }}');       // Campo6 - Nombre
+                            
+                            // Fecha de nacimiento
+                            form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');    // Campo54 - Día nacimiento
+                            form.getTextField('Texto-1').setText(fechaNac[1] || '');                 // Campo55 - Mes nacimiento
+                            form.getTextField('Textfield-7').setText(fechaNac[0] || '');             // Campo7 - Año nacimiento
+                            
+                            // País y nacionalidad
+                            form.getTextField('Textfield-8').setText('{{ $cliente->pais->nombre }}'); // Campo8 - País
+                            form.getTextField('Textfield-9').setText('{{ $cliente->pais->nombre }}'); // Campo9 - Nacionalidad
+                            
+                            // Datos familiares
+                            form.getTextField('Textfield-11').setText('{{ $cliente->nombrepadre }}'); // Campo10 - Nombre padre
+                            form.getTextField('N').setText('{{ $cliente->nombremadre }}');            // Campo11 - Nombre madre
+                            
+                            // Dirección y contacto
+                            form.getTextField('Provincia').setText('{{ $cliente->direccion }}');      // Campo13 - Dirección
+                            form.getTextField('Textfield-13').setText('{{ $cliente->localidad->nombre }}'); // Campo16 - Localidad
+                            form.getTextField('Textfield-14').setText('{{ $cliente->cp }}');          // Campo17 - CP
+                            form.getTextField('Textfield-16').setText('{{ $cliente->provincia->nombre }}'); // Campo18 - Provincia
+                            form.getTextField('Textfield-18').setText('{{ $cliente->telefono }}');    // Campo19 - Teléfono
+                            form.getTextField('DN IN IEPAS').setText('{{ $cliente->email }}');        // Campo20 - Email
+                            
+                            // Datos adicionales
+                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}'); // Campo47 - Nombre y apellidos
+                            form.getTextField('Textfield-55').setText('MADRID');                      // Campo48 - Madrid
+                            form.getTextField('a').setText(fecha.getDate().toString());              // Campo56 - Día actual
+                            form.getTextField('de').setText(meses[fecha.getMonth()]);                // Campo49 - Mes actual
+                            form.getTextField('de-0').setText(fecha.getFullYear().toString());       // Campo50 - Año actual
+
+                        } catch (e) {
+                            console.error('Error al rellenar el formulario:', e);
+                        }
                     }
+                
+                    
 
                     const pdfBytes = await pdfDoc.save();
                     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -1113,10 +1221,10 @@ $('#descargarPDF').click(function() {
             a.click();
             
             // Limpieza
-            setTimeout(() => {
+                    setTimeout(() => {
                 URL.revokeObjectURL(blobUrl);
                 document.body.removeChild(a);
-            }, 100);
+                    }, 100);
             
             // Mostrar notificación diferente para este método
             mostrarNotificacionDescarga(suggestedName, "Se ha descargado en tu carpeta de descargas");
@@ -1253,3 +1361,4 @@ function mostrarNotificacionError(mensaje) {
             });
         </script>
     @stop
+                    
