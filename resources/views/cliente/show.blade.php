@@ -70,9 +70,8 @@
                     </li>
                 @endfor
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill"
-                        href="#pdf" role="tab" aria-controls="custom-content-below-profile"
-                        aria-selected="false">PDF</a>
+                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill" href="#pdf"
+                        role="tab" aria-controls="custom-content-below-profile" aria-selected="false">PDF</a>
                 </li>
 
             </ul>
@@ -273,7 +272,8 @@
 
                 {{-- EX-PDF --}}
 
-                <div class="tab-pane fade" id="pdf" role="tabpanel" aria-labelledby="custom-content-below-profile-tab">
+                <div class="tab-pane fade" id="pdf" role="tabpanel"
+                    aria-labelledby="custom-content-below-profile-tab">
                     <div class="container-fluid h-100">
                         <div class="card card-row card-default mt-4">
                             <div class="card-header bg-success">
@@ -283,18 +283,19 @@
                             </div>
                             <div class="card-body">
                                 @php
-                                $directorio = storage_path('app/public/pdfs');
-                                $archivos = is_dir($directorio) ? scandir($directorio) : [];
-                                $pdfs = array_filter($archivos, function($archivo) {
-                                    return strpos($archivo, '.pdf') !== false;
-                                });
+                                    $directorio = storage_path('app/public/pdfs');
+                                    $archivos = is_dir($directorio) ? scandir($directorio) : [];
+                                    $pdfs = array_filter($archivos, function ($archivo) {
+                                        return strpos($archivo, '.pdf') !== false;
+                                    });
                                 @endphp
                                 {{-- Selector de formulario --}}
                                 <div class="form-group">
                                     <label>Seleccionar Formulario</label>
-                                    <select id="formularioEx" class="form-control" onchange="console.log('PDF seleccionado:', this.value)">
+                                    <select id="formularioEx" class="form-control"
+                                        onchange="console.log('PDF seleccionado:', this.value)">
                                         <option value="">Seleccione un formulario...</option>
-                                        @foreach($pdfs as $pdf)
+                                        @foreach ($pdfs as $pdf)
                                             <option value="{{ $pdf }}">{{ $pdf }}</option>
                                         @endforeach
                                     </select>
@@ -308,7 +309,7 @@
                                     <iframe id="pdfFrame" style="width:100%; height:600px; border:none;"></iframe>
                                 </div>
 
-                                
+
                             </div>
                         </div>
                     </div>
@@ -447,7 +448,7 @@
     @section('js')
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-        
+
         <script>
             // Función para cargar el PDF
             function cargarPDF(nombrePDF) {
@@ -455,23 +456,25 @@
                     document.getElementById('pdfFrame').style.display = 'none';
                     return;
                 }
-            
+
                 const baseUrl = '/Plataforma/public';
                 const pdfUrl = `${baseUrl}/formulario-ex/pdf/${nombrePDF}`;
-                
+
                 console.log('Intentando cargar:', pdfUrl);
-                
+
                 document.getElementById('pdfFrame').style.display = 'block';
                 document.getElementById('pdfFrame').src = pdfUrl;
             }
-            
+
             // Event listener
             document.getElementById('formularioEx').addEventListener('change', function() {
                 cargarPDF(this.value);
             });
-            </script>
+        </script>
         <script>
-            const { PDFDocument } = PDFLib;
+            const {
+                PDFDocument
+            } = PDFLib;
 
             async function fillFormByTemplate(pdfUrl) {
                 try {
@@ -516,10 +519,13 @@
 
                         // Añadir los nuevos campos al final de EX00
                         const fecha = new Date();
-                        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                            'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                        ];
                         const dia = fecha.getDate().toString().padStart(2, '0');
 
-                        form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                        form.getTextField('Nombre y apellidos del titular').setText(
+                            '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                         form.getTextField('Textfield-52').setText('MADRID');
                         form.getTextField('a').setText(dia);
                         form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -544,17 +550,17 @@
                         form.getTextField('Textfield-3').setText(apellidos[0] || '');
                         form.getTextField('Textfield-5').setText(apellidos[1] || '');
                         form.getTextField('Lugar').setText('{{ $cliente->nombre }}');
-                        
+
                         form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');
                         form.getTextField('Texto-1').setText(fechaNac[1] || '');
                         form.getTextField('Textfield-7').setText(fechaNac[0] || '');
-                        
+
                         form.getTextField('Textfield-8').setText(nacionalidad);
                         form.getTextField('Textfield-9').setText(nacionalidad);
-                        
+
                         form.getTextField('Textfield-10').setText('{{ $cliente->nombrepadre }}');
                         form.getTextField('Piso').setText('{{ $cliente->nombremadre }}');
-                        
+
                         form.getTextField('Textfield-11').setText('{{ $cliente->direccion }}');
                         form.getTextField('Email').setText('{{ $cliente->localidad->nombre }}');
                         form.getTextField('Textfield-16').setText('{{ $cliente->cp }}');
@@ -564,10 +570,13 @@
 
                         // Añadir los nuevos campos al final de EX01
                         const fecha = new Date();
-                        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                            'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                        ];
                         const dia = fecha.getDate().toString().padStart(2, '0');
 
-                        form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                        form.getTextField('Nombre y apellidos del titular').setText(
+                            '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                         form.getTextField('Textfield-53').setText('MADRID');
                         form.getTextField('a').setText(dia);
                         form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -604,13 +613,16 @@
                         form.getTextField('Textfield-16').setText('{{ $cliente->provincia->nombre }}');
                         form.getTextField('Textfield-17').setText('{{ $cliente->telefono }}');
                         form.getTextField('Textfield-19').setText('{{ $cliente->email }}');
-                        
+
                         // Añadir solo los nuevos campos al final
                         const fecha = new Date();
-                        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                        const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                            'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                        ];
                         const dia = fecha.getDate().toString().padStart(2, '0');
 
-                        form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                        form.getTextField('Nombre y apellidos del titular').setText(
+                            '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                         form.getTextField('Textfield-66').setText('MADRID');
                         form.getTextField('a').setText(dia);
                         form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -637,15 +649,15 @@
                             form.getTextField('Textfield-3').setText(apellidos[0] || '');
                             form.getTextField('Textfield-5').setText(apellidos[1] || '');
                             form.getTextField('Lugar').setText('{{ $cliente->nombre }}');
-                            
+
                             // Fecha de nacimiento
                             form.getTextField('Feccha de nacimientoz').setText(fechaNac[2] || '');
                             form.getTextField('Texto-1').setText(fechaNac[1] || '');
                             form.getTextField('Textfield-6').setText(fechaNac[0] || '');
-                            
+
                             // País de nacimiento
                             form.getTextField('Textfield-10').setText(nacionalidad); // T13 para nacionalidad
-                            
+
                             // Datos familiares y dirección
                             form.getTextField('Textfield-11').setText('{{ $cliente->nombrepadre }}');
                             form.getTextField('Piso').setText('{{ $cliente->nombremadre }}');
@@ -658,10 +670,13 @@
 
                             // Nuevos campos solicitados
                             const fecha = new Date();
-                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                                'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                            ];
                             const dia = fecha.getDate().toString().padStart(2, '0');
 
-                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                            form.getTextField('Nombre y apellidos del titular').setText(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                             form.getTextField('Textfield-65').setText('MADRID');
                             form.getTextField('a').setText(dia);
                             form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -692,20 +707,20 @@
                             form.getTextField('Textfield-8').setText(apellidos[0] || '');
                             form.getTextField('x').setText(apellidos[1] || '');
                             form.getTextField('Textfield-5').setText('{{ $cliente->nombre }}');
-                            
+
                             // Fecha de nacimiento
                             form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');
                             form.getTextField('Texto-1').setText(fechaNac[1] || '');
                             form.getTextField('Textfield-6').setText(fechaNac[0] || '');
-                            
+
                             // Nacionalidad
                             form.getTextField('Textfield-7').setText(nacionalidad);
                             form.getTextField('Textfield-9').setText(nacionalidad);
-                            
+
                             // Datos familiares
                             form.getTextField('Textfield-10').setText('{{ $cliente->nombrepadre }}');
                             form.getTextField('Piso').setText('{{ $cliente->nombremadre }}');
-                            
+
                             // Datos de contacto
                             form.getTextField('Provincia').setText('{{ $cliente->direccion }}');
                             form.getTextField('Textfield-14').setText('{{ $cliente->localidad->nombre }}');
@@ -716,10 +731,13 @@
 
                             // Nuevos campos solicitados
                             const fecha = new Date();
-                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                                'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                            ];
                             const dia = fecha.getDate().toString().padStart(2, '0');
 
-                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                            form.getTextField('Nombre y apellidos del titular').setText(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                             form.getTextField('Textfield-65').setText('MADRID');
                             form.getTextField('a').setText(dia);
                             form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -729,7 +747,7 @@
                             console.error('Error rellenando campos:', e);
                         }
                     } else if (formType === 'EX10 - Formulario autor. resid. o resid. y trabajo circunst excep.pdf') {
-                        
+
 
                         // Mantener el código existente que ya funciona
                         const tipoDoc = {{ $cliente->documento_id }};
@@ -752,20 +770,20 @@
                             form.getTextField('CP').setText(apellidos[0] || '');
                             form.getTextField('x').setText(apellidos[1] || '');
                             form.getTextField('Textfield-4').setText('{{ $cliente->nombre }}');
-                            
+
                             // Fecha de nacimiento
                             form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');
                             form.getTextField('Texto-1').setText(fechaNac[1] || '');
                             form.getTextField('Textfield-5').setText(fechaNac[0] || '');
-                            
+
                             // País de nacimiento
                             form.getTextField('Textfield-6').setText(nacionalidad);
                             form.getTextField('Textfield-7').setText(nacionalidad);
-                            
+
                             // Datos familiares
                             form.getTextField('Textfield-9').setText('{{ $cliente->nombrepadre }}');
                             form.getTextField('Piso').setText('{{ $cliente->nombremadre }}');
-                            
+
                             // Dirección y contacto
                             form.getTextField('Textfield-12').setText('{{ $cliente->localidad->nombre }}');
                             form.getTextField('Textfield-15').setText('{{ $cliente->cp }}');
@@ -776,10 +794,13 @@
 
                             // Nuevos campos solicitados
                             const fecha = new Date();
-                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                                'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                            ];
                             const dia = fecha.getDate().toString().padStart(2, '0');
 
-                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                            form.getTextField('Nombre y apellidos del titular').setText(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                             form.getTextField('Textfield-77').setText('MADRID');
                             form.getTextField('a').setText(dia);
                             form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -789,7 +810,7 @@
                             console.error('Error rellenando campos:', e);
                         }
                     } else if (formType === 'EX11 - Formulario_larga_duracion.pdf') {
-                        
+
 
                         // Mantener el código existente que ya funciona
                         const tipoDoc = {{ $cliente->documento_id }};
@@ -812,20 +833,20 @@
                             form.getTextField('CP').setText(apellidos[0] || '');
                             form.getTextField('x H').setText(apellidos[1] || '');
                             form.getTextField('Textfield-6').setText('{{ $cliente->nombre }}');
-                            
+
                             // Fecha de nacimiento
                             form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');
                             form.getTextField('Texto-1').setText(fechaNac[1] || '');
                             form.getTextField('Textfield-8').setText(fechaNac[0] || '');
-                            
+
                             // País de nacimiento
                             form.getTextField('Textfield-9').setText(nacionalidad);
                             form.getTextField('Textfield-10').setText(nacionalidad);
-                            
+
                             // Datos familiares
                             form.getTextField('Textfield-12').setText('{{ $cliente->nombrepadre }}');
                             form.getTextField('Piso').setText('{{ $cliente->nombremadre }}');
-                            
+
                             // Dirección y contacto
                             form.getTextField('Provincia').setText('{{ $cliente->direccion }}');
                             form.getTextField('Textfield-12').setText('{{ $cliente->nombrepadre }}');
@@ -837,10 +858,13 @@
 
                             // Añadir solo los nuevos campos al final
                             const fecha = new Date();
-                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                                'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                            ];
                             const dia = fecha.getDate().toString().padStart(2, '0');
 
-                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                            form.getTextField('Nombre y apellidos del titular').setText(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                             form.getTextField('Textfield-55').setText('MADRID');
                             form.getTextField('a').setText(dia);
                             form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -856,42 +880,52 @@
                             const apellidos = '{{ $cliente->apellido }}'.split(' ');
                             const fechaNac = '{{ $cliente->fecnac }}'.split('-');
                             const nacionalidad = '{{ $cliente->pais->nombre }}';
-                            
+
                             // Lógica para el documento según el tipo
                             if (tipoDoc === 3) {
-                                form.getTextField('Textfield').setText(documento);        // Campo1 - Pasaporte completo
+                                form.getTextField('Textfield').setText(documento); // Campo1 - Pasaporte completo
                             } else {
-                                form.getTextField('Textfield-0').setText(documento.substring(0, 1));         // Campo2 - Primera letra NIE
-                                form.getTextField('Textfield-1').setText(documento.substring(1, documento.length - 1));  // Campo3 - Dígitos NIE
-                                form.getTextField('Textfield-2').setText(documento.slice(-1));               // Campo4 - Última letra NIE
+                                form.getTextField('Textfield-0').setText(documento.substring(0,
+                                1)); // Campo2 - Primera letra NIE
+                                form.getTextField('Textfield-1').setText(documento.substring(1, documento.length -
+                                1)); // Campo3 - Dígitos NIE
+                                form.getTextField('Textfield-2').setText(documento.slice(-1)); // Campo4 - Última letra NIE
                             }
                             const fecha = new Date();
-                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                                'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                            ];
                             const dia = fecha.getDate().toString().padStart(2, '0');
                             // Apellidos
-                            form.getTextField('Textfield-3').setText(apellidos[0] || '');    // Campo5 - Primer apellido
-                            form.getTextField('x').setText(apellidos[1] || '');              // Campo6 - Segundo apellido
+                            form.getTextField('Textfield-3').setText(apellidos[0] || ''); // Campo5 - Primer apellido
+                            form.getTextField('x').setText(apellidos[1] || ''); // Campo6 - Segundo apellido
 
                             // Resto de campos...
-                            form.getTextField('Textfield-4').setText('{{ $cliente->nombre }}');           // Campo7 - nombre
-                            form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');        // Campo58 - día nacimiento
-                            form.getTextField('Texto-1').setText(fechaNac[1] || '');                     // Campo59 - mes nacimiento
-                            form.getTextField('Textfield-6').setText(fechaNac[0] || '');                 // Campo8 - año nacimiento
-                            form.getTextField('Textfield-7').setText('{{ $cliente->pais->nombre }}');    // Campo10 - país
-                            form.getTextField('Textfield-8').setText('{{ $cliente->pais->nombre }}');    // Campo11 - nacionalidad
-                            form.getTextField('Textfield-10').setText('{{ $cliente->nombrepadre }}');    // Campo12 - nombre padre
-                            form.getTextField('N').setText('{{ $cliente->nombremadre }}');               // Campo13 - nombre madre
-                            form.getTextField('Provincia').setText('{{ $cliente->direccion }}');         // Campo14 - dirección
-                            form.getTextField('Textfield-14').setText('{{ $cliente->cp }}');             // Campo18 - CP
-                            form.getTextField('Textfield-15').setText('{{ $cliente->provincia->nombre }}'); // Campo19 - provincia
-                            form.getTextField('Textfield-13').setText('{{ $cliente->localidad->nombre }}'); // Campo17 - localidad
-                            form.getTextField('Textfield-16').setText('{{ $cliente->telefono }}');       // Campo20 - teléfono
-                            form.getTextField('Titulo4').setText('{{ $cliente->email }}');               // Campo21 - email
-                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}'); // Campo48 - nombre completo
-                            form.getTextField('Textfield-50').setText('MADRID');                         // Campo50 - Madrid
-                            form.getTextField('a').setText(fecha.getDate().toString());                  // Campo51 - día actual
-                            form.getTextField('de').setText(meses[fecha.getMonth()]);                    // Campo52 - mes actual
-                            form.getTextField('de-0').setText(fecha.getFullYear().toString());          // Campo53 - año actual
+                            form.getTextField('Textfield-4').setText('{{ $cliente->nombre }}'); // Campo7 - nombre
+                            form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] ||
+                            ''); // Campo58 - día nacimiento
+                            form.getTextField('Texto-1').setText(fechaNac[1] || ''); // Campo59 - mes nacimiento
+                            form.getTextField('Textfield-6').setText(fechaNac[0] || ''); // Campo8 - año nacimiento
+                            form.getTextField('Textfield-7').setText('{{ $cliente->pais->nombre }}'); // Campo10 - país
+                            form.getTextField('Textfield-8').setText(
+                            '{{ $cliente->pais->nombre }}'); // Campo11 - nacionalidad
+                            form.getTextField('Textfield-10').setText(
+                            '{{ $cliente->nombrepadre }}'); // Campo12 - nombre padre
+                            form.getTextField('N').setText('{{ $cliente->nombremadre }}'); // Campo13 - nombre madre
+                            form.getTextField('Provincia').setText('{{ $cliente->direccion }}'); // Campo14 - dirección
+                            form.getTextField('Textfield-14').setText('{{ $cliente->cp }}'); // Campo18 - CP
+                            form.getTextField('Textfield-15').setText(
+                            '{{ $cliente->provincia->nombre }}'); // Campo19 - provincia
+                            form.getTextField('Textfield-13').setText(
+                            '{{ $cliente->localidad->nombre }}'); // Campo17 - localidad
+                            form.getTextField('Textfield-16').setText('{{ $cliente->telefono }}'); // Campo20 - teléfono
+                            form.getTextField('Titulo4').setText('{{ $cliente->email }}'); // Campo21 - email
+                            form.getTextField('Nombre y apellidos del titular').setText(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}'); // Campo48 - nombre completo
+                            form.getTextField('Textfield-50').setText('MADRID'); // Campo50 - Madrid
+                            form.getTextField('a').setText(fecha.getDate().toString()); // Campo51 - día actual
+                            form.getTextField('de').setText(meses[fecha.getMonth()]); // Campo52 - mes actual
+                            form.getTextField('de-0').setText(fecha.getFullYear().toString()); // Campo53 - año actual
 
                             // ... rest of existing code for checkboxes ...
 
@@ -920,20 +954,20 @@
                             form.getTextField('CP').setText(apellidos[0] || '');
                             form.getTextField('x').setText(apellidos[1] || '');
                             form.getTextField('Textfield-5').setText('{{ $cliente->nombre }}');
-                            
+
                             // Fecha de nacimiento
                             form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');
                             form.getTextField('Texto-1').setText(fechaNac[1] || '');
                             form.getTextField('Textfield-6').setText(fechaNac[0] || '');
-                            
+
                             // País de nacimiento
                             form.getTextField('Textfield-7').setText(nacionalidad);
                             form.getTextField('Textfield-8').setText(nacionalidad);
-                            
+
                             // Datos familiares
                             form.getTextField('Textfield-10').setText('{{ $cliente->nombrepadre }}');
                             form.getTextField('N').setText('{{ $cliente->nombremadre }}');
-                            
+
                             // Dirección y contacto
                             form.getTextField('Provincia').setText('{{ $cliente->direccion }}');
                             form.getTextField('Textfield-13').setText('{{ $cliente->localidad->nombre }}');
@@ -943,16 +977,19 @@
                             form.getTextField('DN IN IEPAS').setText('{{ $cliente->email }}');
 
                             console.log('Campos EX19 rellenados correctamente');
-                        
+
                             // Mantener todo el código existente del EX19 sin cambios
                             // ... código existente ...
 
                             // Añadir solo los nuevos campos al final
                             const fecha = new Date();
-                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                                'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                            ];
                             const dia = fecha.getDate().toString().padStart(2, '0');
 
-                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                            form.getTextField('Nombre y apellidos del titular').setText(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                             form.getTextField('Textfield-66').setText('MADRID');
                             form.getTextField('a').setText(dia);
                             form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -983,20 +1020,20 @@
                             form.getTextField('CP').setText(apellidos[0] || '');
                             form.getTextField('x').setText(apellidos[1] || '');
                             form.getTextField('Textfield-5').setText('{{ $cliente->nombre }}');
-                            
+
                             // Fecha de nacimiento
                             form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');
                             form.getTextField('Texto-1').setText(fechaNac[1] || '');
                             form.getTextField('Textfield-6').setText(fechaNac[0] || '');
-                            
+
                             // Nacionalidad
                             form.getTextField('Textfield-7').setText(nacionalidad);
                             form.getTextField('Textfield-8').setText(nacionalidad);
-                            
+
                             // Datos familiares
                             form.getTextField('Textfield-10').setText('{{ $cliente->nombrepadre }}');
                             form.getTextField('N').setText('{{ $cliente->nombremadre }}');
-                            
+
                             // Datos de contacto
                             form.getTextField('Provincia').setText('{{ $cliente->direccion }}');
                             form.getTextField('Textfield-13').setText('{{ $cliente->localidad->nombre }}');
@@ -1007,10 +1044,13 @@
 
                             // Nuevos campos solicitados
                             const fecha = new Date();
-                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                                'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                            ];
                             const dia = fecha.getDate().toString().padStart(2, '0');
 
-                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}');
+                            form.getTextField('Nombre y apellidos del titular').setText(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}');
                             form.getTextField('Textfield-55').setText('MADRID');
                             form.getTextField('a').setText(dia);
                             form.getTextField('de').setText(meses[fecha.getMonth()]);
@@ -1025,37 +1065,39 @@
                         const fechaNac = '{{ $cliente->fecnac }}'.split('-');
                         const tipoDoc = {{ $cliente->documento_id }};
                         const documento = '{{ $cliente->documento }}';
-                        
+
                         // Obtener fecha actual
                         const fecha = new Date();
-                        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-                        
+                        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto',
+                            'septiembre', 'octubre', 'noviembre', 'diciembre'
+                        ];
+
                         try {
                             // Mapeo de campos con sus valores
                             const fieldValues = {
-                                'Text1': '{{ $cliente->nombre }}',                    // T0 nombre
-                                'Text2': apellidos[0] || '',                         // T1 primer apellido
-                                'Text4': apellidos[1] || '',                         // T2 segundo apellido
-                                'Text5': '{{ $cliente->pais->nombre }}',             // T3 nacionalidad
-                                'Text6': tipoDoc === 3 ? '' : documento,             // T4 nie (solo si no es pasaporte)
-                                'Text8': tipoDoc === 3 ? documento : '',             // T6 pasaporte (solo si es pasaporte)
-                                'Text7': fechaNac[2] || '',                         // T5 dia nacimiento
-                                'Text9': fechaNac[1] || '',                         // T7 mes
-                                'Text10': fechaNac[0] || '',                        // T8 año
-                                'Text11': '{{ $cliente->localidad->nombre }}',       // T9 localidad
-                                'Text13': '{{ $cliente->pais->nombre }}',            // T10 pais
-                                'Text14': '{{ $cliente->nombrepadre }}',             // T11 nombre padre
-                                'Text18': '{{ $cliente->nombremadre }}',             // T15 nombre madre
-                                'Text20': '{{ $cliente->direccion }}',               // T16 direccion
-                                'Text15': '{{ $cliente->localidad->nombre }}',       // T12 localidad
-                                'Text24': '{{ $cliente->cp }}',                      // T20 cp
-                                'Text23': '{{ $cliente->provincia->nombre }}',       // T19 provincia
-                                'Text17': '{{ $cliente->telefono }}',                // T14 telefono
-                                'Text16': '{{ $cliente->email }}',                   // T13 email
-                                'Text44': 'Madrid',                                  // Ciudad fija
-                                'Text45': fecha.getDate().toString(),                // Día actual
-                                'Text46': meses[fecha.getMonth()],                   // Mes actual en letra
-                                'Text47': fecha.getFullYear().toString()             // Año actual
+                                'Text1': '{{ $cliente->nombre }}', // T0 nombre
+                                'Text2': apellidos[0] || '', // T1 primer apellido
+                                'Text4': apellidos[1] || '', // T2 segundo apellido
+                                'Text5': '{{ $cliente->pais->nombre }}', // T3 nacionalidad
+                                'Text6': tipoDoc === 3 ? '' : documento, // T4 nie (solo si no es pasaporte)
+                                'Text8': tipoDoc === 3 ? documento : '', // T6 pasaporte (solo si es pasaporte)
+                                'Text7': fechaNac[2] || '', // T5 dia nacimiento
+                                'Text9': fechaNac[1] || '', // T7 mes
+                                'Text10': fechaNac[0] || '', // T8 año
+                                'Text11': '{{ $cliente->localidad->nombre }}', // T9 localidad
+                                'Text13': '{{ $cliente->pais->nombre }}', // T10 pais
+                                'Text14': '{{ $cliente->nombrepadre }}', // T11 nombre padre
+                                'Text18': '{{ $cliente->nombremadre }}', // T15 nombre madre
+                                'Text20': '{{ $cliente->direccion }}', // T16 direccion
+                                'Text15': '{{ $cliente->localidad->nombre }}', // T12 localidad
+                                'Text24': '{{ $cliente->cp }}', // T20 cp
+                                'Text23': '{{ $cliente->provincia->nombre }}', // T19 provincia
+                                'Text17': '{{ $cliente->telefono }}', // T14 telefono
+                                'Text16': '{{ $cliente->email }}', // T13 email
+                                'Text44': 'Madrid', // Ciudad fija
+                                'Text45': fecha.getDate().toString(), // Día actual
+                                'Text46': meses[fecha.getMonth()], // Mes actual en letra
+                                'Text47': fecha.getFullYear().toString() // Año actual
                             };
 
                             // Rellenar los campos
@@ -1079,62 +1121,74 @@
                             const apellidos = '{{ $cliente->apellido }}'.split(' ');
                             const fechaNac = '{{ $cliente->fecnac }}'.split('-');
                             const nacionalidad = '{{ $cliente->pais->nombre }}';
-                            
+
                             // Obtener fecha actual
                             const fecha = new Date();
-                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                            const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO',
+                                'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+                            ];
 
                             // Documento según tipo
                             if (tipoDoc === 3) {
-                                form.getTextField('Textfield-2').setText(documento);                    // Campo1 - Pasaporte completo
+                                form.getTextField('Textfield-2').setText(documento); // Campo1 - Pasaporte completo
                             } else {
-                                form.getTextField('Textfield-3').setText(documento.substring(0, 1));   // Campo2 - Primera letra NIE
-                                form.getTextField('Textfield-4').setText(documento.substring(1, documento.length - 1));  // Campo3 - Dígitos NIE
-                                form.getTextField('Textfield-5').setText(documento.slice(-1));         // Campo4 - Última letra NIE
+                                form.getTextField('Textfield-3').setText(documento.substring(0,
+                                1)); // Campo2 - Primera letra NIE
+                                form.getTextField('Textfield-4').setText(documento.substring(1, documento.length -
+                                1)); // Campo3 - Dígitos NIE
+                                form.getTextField('Textfield-5').setText(documento.slice(-1)); // Campo4 - Última letra NIE
                             }
 
                             // Datos personales
-                            form.getTextField('CP').setText(apellidos[0] || '');                      // Campo12 - Primer apellido
-                            form.getTextField('x').setText(apellidos[1] || '');                       // Campo5 - Segundo apellido
-                            form.getTextField('Textfield-6').setText('{{ $cliente->nombre }}');       // Campo6 - Nombre
-                            
+                            form.getTextField('CP').setText(apellidos[0] || ''); // Campo12 - Primer apellido
+                            form.getTextField('x').setText(apellidos[1] || ''); // Campo5 - Segundo apellido
+                            form.getTextField('Textfield-6').setText('{{ $cliente->nombre }}'); // Campo6 - Nombre
+
                             // Fecha de nacimiento
-                            form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] || '');    // Campo54 - Día nacimiento
-                            form.getTextField('Texto-1').setText(fechaNac[1] || '');                 // Campo55 - Mes nacimiento
-                            form.getTextField('Textfield-7').setText(fechaNac[0] || '');             // Campo7 - Año nacimiento
-                            
+                            form.getTextField('Fecha de nacimientoz').setText(fechaNac[2] ||
+                            ''); // Campo54 - Día nacimiento
+                            form.getTextField('Texto-1').setText(fechaNac[1] || ''); // Campo55 - Mes nacimiento
+                            form.getTextField('Textfield-7').setText(fechaNac[0] || ''); // Campo7 - Año nacimiento
+
                             // País y nacionalidad
                             form.getTextField('Textfield-8').setText('{{ $cliente->pais->nombre }}'); // Campo8 - País
-                            form.getTextField('Textfield-9').setText('{{ $cliente->pais->nombre }}'); // Campo9 - Nacionalidad
-                            
+                            form.getTextField('Textfield-9').setText(
+                            '{{ $cliente->pais->nombre }}'); // Campo9 - Nacionalidad
+
                             // Datos familiares
-                            form.getTextField('Textfield-11').setText('{{ $cliente->nombrepadre }}'); // Campo10 - Nombre padre
-                            form.getTextField('N').setText('{{ $cliente->nombremadre }}');            // Campo11 - Nombre madre
-                            
+                            form.getTextField('Textfield-11').setText(
+                            '{{ $cliente->nombrepadre }}'); // Campo10 - Nombre padre
+                            form.getTextField('N').setText('{{ $cliente->nombremadre }}'); // Campo11 - Nombre madre
+
                             // Dirección y contacto
-                            form.getTextField('Provincia').setText('{{ $cliente->direccion }}');      // Campo13 - Dirección
-                            form.getTextField('Textfield-13').setText('{{ $cliente->localidad->nombre }}'); // Campo16 - Localidad
-                            form.getTextField('Textfield-14').setText('{{ $cliente->cp }}');          // Campo17 - CP
-                            form.getTextField('Textfield-16').setText('{{ $cliente->provincia->nombre }}'); // Campo18 - Provincia
-                            form.getTextField('Textfield-18').setText('{{ $cliente->telefono }}');    // Campo19 - Teléfono
-                            form.getTextField('DN IN IEPAS').setText('{{ $cliente->email }}');        // Campo20 - Email
-                            
+                            form.getTextField('Provincia').setText('{{ $cliente->direccion }}'); // Campo13 - Dirección
+                            form.getTextField('Textfield-14').setText(
+                            '{{ $cliente->localidad->nombre }}'); // Campo17 - Localidad
+                            form.getTextField('Textfield-16').setText('{{ $cliente->cp }}'); // Campo17 - CP
+                            form.getTextField('Textfield-18').setText(
+                            '{{ $cliente->provincia->nombre }}'); // Campo18 - Provincia
+                            form.getTextField('Textfield-19').setText('{{ $cliente->telefono }}'); // Campo19 - Email
+                            form.getTextField('DN IN IEPAS').setText('{{ $cliente->email }}'); // Campo20 - Email
+
                             // Datos adicionales
-                            form.getTextField('Nombre y apellidos del titular').setText('{{ $cliente->nombre }} {{ $cliente->apellido }}'); // Campo47 - Nombre y apellidos
-                            form.getTextField('Textfield-55').setText('MADRID');                      // Campo48 - Madrid
-                            form.getTextField('a').setText(fecha.getDate().toString());              // Campo56 - Día actual
-                            form.getTextField('de').setText(meses[fecha.getMonth()]);                // Campo49 - Mes actual
-                            form.getTextField('de-0').setText(fecha.getFullYear().toString());       // Campo50 - Año actual
+                            form.getTextField('Nombre y apellidos del titular').setText(
+                                '{{ $cliente->nombre }} {{ $cliente->apellido }}'); // Campo47 - Nombre y apellidos
+                            form.getTextField('Textfield-55').setText('MADRID'); // Campo48 - Madrid
+                            form.getTextField('a').setText(fecha.getDate().toString()); // Campo56 - Día actual
+                            form.getTextField('de').setText(meses[fecha.getMonth()]); // Campo49 - Mes actual
+                            form.getTextField('de-0').setText(fecha.getFullYear().toString()); // Campo50 - Año actual
 
                         } catch (e) {
                             console.error('Error al rellenar el formulario:', e);
                         }
                     }
-                
-                    
+
+
 
                     const pdfBytes = await pdfDoc.save();
-                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                    const blob = new Blob([pdfBytes], {
+                        type: 'application/pdf'
+                    });
                     const url = URL.createObjectURL(blob);
                     document.getElementById('pdfFrame').src = url;
 
@@ -1144,118 +1198,124 @@
                 }
             }
 
-           // Event listener para cambio en el select
-$('#formularioEx').change(function() {
-    if (this.value) {
-        const baseUrl = '/Plataforma/public';
-        const pdfUrl = `${baseUrl}/formulario-ex/pdf/${this.value}`;
-        fillFormByTemplate(pdfUrl);
-    }
-});
-
-// Event listener para el botón de descarga
-$('#descargarPDF').click(function() {
-    const formType = $('#formularioEx').val();
-    if (!formType) return;
-    
-    const baseUrl = '/Plataforma/public';
-    const pdfUrl = `${baseUrl}/formulario-ex/pdf/${formType}`;
-    
-    fillFormByTemplate(pdfUrl).then(async () => {
-        try {
-            // Obtener el blob del PDF desde el iframe
-            const iframeSrc = document.getElementById('pdfFrame').src;
-            const response = await fetch(iframeSrc);
-            const blob = await response.blob();
-            
-            // Crear un nuevo objeto File con el blob
-            const suggestedName = formType.toUpperCase().startsWith('EX') ? 
-                formType.substring(0, 4) + '.pdf' : 
-                formType;
-            
-            const file = new File([blob], suggestedName, { type: 'application/pdf' });
-            
-            // MÉTODO 1: Usar la API File System Access para seleccionar carpeta
-            if ('showSaveFilePicker' in window) {
-                try {
-                    const opts = {
-                        suggestedName: suggestedName,
-                        types: [{
-                            description: 'PDF Document',
-                            accept: { 'application/pdf': ['.pdf'] }
-                        }]
-                    };
-                    
-                    const handle = await window.showSaveFilePicker(opts);
-                    
-                    // Capturar el nombre del archivo que el usuario seleccionó
-                    const userSelectedName = handle.name;
-                    
-                    const writable = await handle.createWritable();
-                    await writable.write(file);
-                    await writable.close();
-                    
-                    // Mostrar notificación con el nombre real seleccionado por el usuario
-                    mostrarNotificacionDescarga(userSelectedName, "Se ha guardado en la ubicación seleccionada");
-                    return; // ¡IMPORTANTE! Detiene la ejecución para evitar descargas duplicadas
-                } catch (e) {
-                    // Si el usuario cancela la selección (AbortError), no seguimos con otros métodos
-                    if (e.name === 'AbortError') {
-                        console.log('Usuario canceló la selección de carpeta');
-                        return;
-                    }
-                    
-                    console.log('Error usando File System Access API:', e);
-                    // Si hay un error diferente a la cancelación, continuamos con el método alternativo
+            // Event listener para cambio en el select
+            $('#formularioEx').change(function() {
+                if (this.value) {
+                    const baseUrl = '/Plataforma/public';
+                    const pdfUrl = `${baseUrl}/formulario-ex/pdf/${this.value}`;
+                    fillFormByTemplate(pdfUrl);
                 }
-            }
-            
-            // MÉTODO 2: Método tradicional de descarga (fallback)
-            // Solo se ejecuta si el método 1 no está disponible o falla
-            console.log('Usando método alternativo de descarga (descarga directa)');
-            const blobUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = suggestedName;
-            document.body.appendChild(a);
-            a.click();
-            
-            // Limpieza
-                    setTimeout(() => {
-                URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(a);
-                    }, 100);
-            
-            // Mostrar notificación diferente para este método
-            mostrarNotificacionDescarga(suggestedName, "Se ha descargado en tu carpeta de descargas");
-            
-        } catch (error) {
-            console.error('Error al descargar el PDF:', error);
-            mostrarNotificacionError('No se pudo descargar el archivo');
-        }
-    });
-});
+            });
 
-// Función para mostrar la notificación de descarga exitosa
-function mostrarNotificacionDescarga(nombreArchivo, mensaje) {
-    // Crear el elemento de notificación
-    const notificacion = document.createElement('div');
-    notificacion.style.position = 'fixed';
-    notificacion.style.bottom = '20px';
-    notificacion.style.right = '20px';
-    notificacion.style.backgroundColor = '#28a745';
-    notificacion.style.color = 'white';
-    notificacion.style.padding = '15px 20px';
-    notificacion.style.borderRadius = '4px';
-    notificacion.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-    notificacion.style.zIndex = '9999';
-    notificacion.style.display = 'flex';
-    notificacion.style.alignItems = 'center';
-    notificacion.style.maxWidth = '300px';
-    notificacion.style.animation = 'fadeIn 0.3s ease-out';
-    
-    // Añadir icono y mensaje dinámico
-    notificacion.innerHTML = `
+            // Event listener para el botón de descarga
+            $('#descargarPDF').click(function() {
+                const formType = $('#formularioEx').val();
+                if (!formType) return;
+
+                const baseUrl = '/Plataforma/public';
+                const pdfUrl = `${baseUrl}/formulario-ex/pdf/${formType}`;
+
+                fillFormByTemplate(pdfUrl).then(async () => {
+                    try {
+                        // Obtener el blob del PDF desde el iframe
+                        const iframeSrc = document.getElementById('pdfFrame').src;
+                        const response = await fetch(iframeSrc);
+                        const blob = await response.blob();
+
+                        // Crear un nuevo objeto File con el blob
+                        const suggestedName = formType.toUpperCase().startsWith('EX') ?
+                            formType.substring(0, 4) + '.pdf' :
+                            formType;
+
+                        const file = new File([blob], suggestedName, {
+                            type: 'application/pdf'
+                        });
+
+                        // MÉTODO 1: Usar la API File System Access para seleccionar carpeta
+                        if ('showSaveFilePicker' in window) {
+                            try {
+                                const opts = {
+                                    suggestedName: suggestedName,
+                                    types: [{
+                                        description: 'PDF Document',
+                                        accept: {
+                                            'application/pdf': ['.pdf']
+                                        }
+                                    }]
+                                };
+
+                                const handle = await window.showSaveFilePicker(opts);
+
+                                // Capturar el nombre del archivo que el usuario seleccionó
+                                const userSelectedName = handle.name;
+
+                                const writable = await handle.createWritable();
+                                await writable.write(file);
+                                await writable.close();
+
+                                // Mostrar notificación con el nombre real seleccionado por el usuario
+                                mostrarNotificacionDescarga(userSelectedName,
+                                    "Se ha guardado en la ubicación seleccionada");
+                                return; // ¡IMPORTANTE! Detiene la ejecución para evitar descargas duplicadas
+                            } catch (e) {
+                                // Si el usuario cancela la selección (AbortError), no seguimos con otros métodos
+                                if (e.name === 'AbortError') {
+                                    console.log('Usuario canceló la selección de carpeta');
+                                    return;
+                                }
+
+                                console.log('Error usando File System Access API:', e);
+                                // Si hay un error diferente a la cancelación, continuamos con el método alternativo
+                            }
+                        }
+
+                        // MÉTODO 2: Método tradicional de descarga (fallback)
+                        // Solo se ejecuta si el método 1 no está disponible o falla
+                        console.log('Usando método alternativo de descarga (descarga directa)');
+                        const blobUrl = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = suggestedName;
+                        document.body.appendChild(a);
+                        a.click();
+
+                        // Limpieza
+                        setTimeout(() => {
+                            URL.revokeObjectURL(blobUrl);
+                            document.body.removeChild(a);
+                        }, 100);
+
+                        // Mostrar notificación diferente para este método
+                        mostrarNotificacionDescarga(suggestedName,
+                            "Se ha descargado en tu carpeta de descargas");
+
+                    } catch (error) {
+                        console.error('Error al descargar el PDF:', error);
+                        mostrarNotificacionError('No se pudo descargar el archivo');
+                    }
+                });
+            });
+
+            // Función para mostrar la notificación de descarga exitosa
+            function mostrarNotificacionDescarga(nombreArchivo, mensaje) {
+                // Crear el elemento de notificación
+                const notificacion = document.createElement('div');
+                notificacion.style.position = 'fixed';
+                notificacion.style.bottom = '20px';
+                notificacion.style.right = '20px';
+                notificacion.style.backgroundColor = '#28a745';
+                notificacion.style.color = 'white';
+                notificacion.style.padding = '15px 20px';
+                notificacion.style.borderRadius = '4px';
+                notificacion.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                notificacion.style.zIndex = '9999';
+                notificacion.style.display = 'flex';
+                notificacion.style.alignItems = 'center';
+                notificacion.style.maxWidth = '300px';
+                notificacion.style.animation = 'fadeIn 0.3s ease-out';
+
+                // Añadir icono y mensaje dinámico
+                notificacion.innerHTML = `
         <i class="fas fa-check-circle" style="margin-right: 10px; font-size: 20px;"></i>
         <div>
             <div style="font-weight: bold; margin-bottom: 5px;">Descarga completada</div>
@@ -1263,12 +1323,12 @@ function mostrarNotificacionDescarga(nombreArchivo, mensaje) {
             <div style="font-size: 13px;">${mensaje}</div>
         </div>
     `;
-    
-    // Añadir animación CSS si no existe
-    if (!document.getElementById('notificacion-style')) {
-        const style = document.createElement('style');
-        style.id = 'notificacion-style';
-        style.textContent = `
+
+                // Añadir animación CSS si no existe
+                if (!document.getElementById('notificacion-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'notificacion-style';
+                    style.textContent = `
             @keyframes fadeIn {
                 from { opacity: 0; transform: translateY(20px); }
                 to { opacity: 1; transform: translateY(0); }
@@ -1278,56 +1338,55 @@ function mostrarNotificacionDescarga(nombreArchivo, mensaje) {
                 to { opacity: 0; transform: translateY(20px); }
             }
         `;
-        document.head.appendChild(style);
-    }
-    
-    // Añadir a la página
-    document.body.appendChild(notificacion);
-    
-    // Hacer que desaparezca después de 5 segundos
-    setTimeout(() => {
-        notificacion.style.animation = 'fadeOut 0.3s ease-in';
-        setTimeout(() => {
-            document.body.removeChild(notificacion);
-        }, 300);
-    }, 5000);
-}
+                    document.head.appendChild(style);
+                }
 
-// Función para mostrar notificación de error
-function mostrarNotificacionError(mensaje) {
-    const notificacion = document.createElement('div');
-    notificacion.style.position = 'fixed';
-    notificacion.style.bottom = '20px';
-    notificacion.style.right = '20px';
-    notificacion.style.backgroundColor = '#dc3545';
-    notificacion.style.color = 'white';
-    notificacion.style.padding = '15px 20px';
-    notificacion.style.borderRadius = '4px';
-    notificacion.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-    notificacion.style.zIndex = '9999';
-    notificacion.style.display = 'flex';
-    notificacion.style.alignItems = 'center';
-    notificacion.style.maxWidth = '300px';
-    notificacion.style.animation = 'fadeIn 0.3s ease-out';
-    
-    notificacion.innerHTML = `
+                // Añadir a la página
+                document.body.appendChild(notificacion);
+
+                // Hacer que desaparezca después de 5 segundos
+                setTimeout(() => {
+                    notificacion.style.animation = 'fadeOut 0.3s ease-in';
+                    setTimeout(() => {
+                        document.body.removeChild(notificacion);
+                    }, 300);
+                }, 5000);
+            }
+
+            // Función para mostrar notificación de error
+            function mostrarNotificacionError(mensaje) {
+                const notificacion = document.createElement('div');
+                notificacion.style.position = 'fixed';
+                notificacion.style.bottom = '20px';
+                notificacion.style.right = '20px';
+                notificacion.style.backgroundColor = '#dc3545';
+                notificacion.style.color = 'white';
+                notificacion.style.padding = '15px 20px';
+                notificacion.style.borderRadius = '4px';
+                notificacion.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                notificacion.style.zIndex = '9999';
+                notificacion.style.display = 'flex';
+                notificacion.style.alignItems = 'center';
+                notificacion.style.maxWidth = '300px';
+                notificacion.style.animation = 'fadeIn 0.3s ease-out';
+
+                notificacion.innerHTML = `
         <i class="fas fa-exclamation-circle" style="margin-right: 10px; font-size: 20px;"></i>
         <div>
             <div style="font-weight: bold; margin-bottom: 5px;">Error</div>
             <div style="font-size: 13px;">${mensaje}</div>
         </div>
     `;
-    
-    document.body.appendChild(notificacion);
-    
-    setTimeout(() => {
-        notificacion.style.animation = 'fadeOut 0.3s ease-in';
-        setTimeout(() => {
-            document.body.removeChild(notificacion);
-        }, 300);
-    }, 5000);
-}
 
+                document.body.appendChild(notificacion);
+
+                setTimeout(() => {
+                    notificacion.style.animation = 'fadeOut 0.3s ease-in';
+                    setTimeout(() => {
+                        document.body.removeChild(notificacion);
+                    }, 300);
+                }, 5000);
+            }
         </script>
 
         @if (session('eliminar') == 'ok')
@@ -1361,4 +1420,3 @@ function mostrarNotificacionError(mensaje) {
             });
         </script>
     @stop
-                    
